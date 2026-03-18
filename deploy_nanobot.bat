@@ -12,12 +12,13 @@ set DEPLOY_DIR=%~dp0
 :: 移除末尾的反斜杠
 if "%DEPLOY_DIR:~-1%"=="\" set DEPLOY_DIR=%DEPLOY_DIR:~0,-1%
 
-echo 部署目录: %DEPLOY_DIR%
+echo "部署目录: %DEPLOY_DIR%"
 
 :: 设置变量
 set NANOBOT_REPO=https://github.com/HKUDS/nanobot.git
 set WEBUI_REPO=https://github.com/Good0007/nanobot-webui.git
 set VENV_DIR=%DEPLOY_DIR%\venv
+set BUN_DIR=%DEPLOY_DIR%\bun-windows-x64
 set NANOBOT_DIR=%DEPLOY_DIR%\nanobot
 set WEBUI_DIR=%DEPLOY_DIR%\nanobot-webui
 set START_SCRIPT=%DEPLOY_DIR%\start_nanobot.bat
@@ -81,7 +82,7 @@ if errorlevel 1 (
 ) 
 
 echo.
-echo 步骤6: 安装或升级 webui (使用 -e 参数支持热更新)
+echo 步骤6: 安装或升级 webui
 echo 安装 webui...
 cd /d "%WEBUI_DIR%"
 pip show nanobot-webui >nul 2>&1
@@ -91,6 +92,7 @@ if errorlevel 1 (
 )
 
 :: 安装额外依赖
+echo.
 echo 安装额外依赖...
 pip show requests >nul 2>&1
 if errorlevel 1 (
@@ -102,13 +104,40 @@ if errorlevel 1 (
     pip install pillow 
 )
 
-:: 步骤7：检查 dist 目录
-echo 步骤7：检查生成的 dist 目录...
+echo.
+echo "步骤7：下载bun..."
+if not exist "%BUN_DIR%\bun.exe" (
+    if not exist "%DEPLOY_DIR%\bun-windows-x64.zip" (
+        powershell -Command "Invoke-WebRequest -Uri 'https://github.com/oven-sh/bun/releases/latest/download/bun-windows-x64.zip' -OutFile %DEPLOY_DIR%\bun-windows-x64.zip"
+        if %errorlevel% neq 0 (
+            echo "❌ 下载失败，请检查网络连接"
+            echo "你可以手动下载：https://github.com/oven-sh/bun/releases/latest/bun-windows-x64.zip"
+            pause
+            exit /b 1
+        )
+        echo "✅ Bun 下载成功"
+    )
+
+    if exist "%DEPLOY_DIR%\bun-windows-x64.zip" (
+        echo "步骤7：解压 Bun..."
+        powershell -Command "Expand-Archive -Path %DEPLOY_DIR%\bun-windows-x64.zip -DestinationPath %DEPLOY_DIR% -Force"
+        if %errorlevel% neq 0 (
+            echo "❌ 解压失败"
+            pause
+            exit /b 1
+        )
+        echo "✅ Bun 解压成功"
+    ) 
+)
+
+:: 步骤8：检查 dist 目录
+echo.
+echo 步骤8：检查生成的 dist 目录...
 if not exist "%WEBUI_DIR%\webui\web\dist" (
     echo ❌ dist 目录不存在，构建可能未生成文件
     cd /d "%WEBUI_DIR%\web"
-    "%DEPLOY_DIR%\bun.exe" install
-    "%DEPLOY_DIR%\bun.exe" run build
+    "%BUN_DIR%\bun.exe" install
+    "%BUN_DIR%\bun.exe" run build
     xcopy "%WEBUI_DIR%\web\dist" "%WEBUI_DIR%\webui\web\dist" /e /i /h /y >nul
 )
 

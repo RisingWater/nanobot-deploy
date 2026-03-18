@@ -11,7 +11,8 @@
    - 克隆 webui 代码库 (Good0007/nanobot-webui)
    - 创建虚拟环境
    - 以可编辑模式安装 nanobot 和 webui（支持热更新）
-   - 创建启动脚本
+   - 下载bun
+   - 编译前端
 
 2. **start_nanobot.bat** - 启动脚本
    - 启动 nanobot webui 服务

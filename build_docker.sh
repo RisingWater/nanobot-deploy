@@ -10,6 +10,7 @@ echo "========================"
 # 获取当前用户 ID 和组 ID
 USER_ID=$(id -u)
 GROUP_ID=$(id -g)
+PROXY=socks://192.168.122.88:10810
 
 echo "当前用户: $(whoami)"
 echo "用户 ID: $USER_ID"
@@ -49,7 +50,7 @@ echo "开始构建 nanobot Docker 镜像..."
 echo "构建命令: docker build $BUILD_ARGS -t nanobot-all-in-one ."
 echo ""
 
-docker build $BUILD_ARGS -t nanobot-all-in-one .
+docker build --force-rm $BUILD_ARGS --build-arg GIT_PROXY=$PROXY -t nanobot-all-in-one .
 
 if [ $? -eq 0 ]; then
     echo ""

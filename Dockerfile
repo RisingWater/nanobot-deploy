@@ -42,8 +42,11 @@ RUN cp ~/.bun/bin/bun /usr/bin
 
 # 创建工作目录并设置权限
 RUN mkdir -p /app && chown -R $USER_ID:$GROUP_ID /app
-
 RUN mkdir -p /home/$USERNAME && chown -R $USER_ID:$GROUP_ID /home/$USERNAME
+
+# 拷贝启动脚本
+COPY start.sh /app/start.sh
+RUN chmod 777 /app/start.sh
 
 # 切换到非 root 用户
 USER $USER_ID
@@ -85,9 +88,6 @@ RUN mkdir -p $HOME/.nanobot && chmod 755 $HOME/.nanobot
 # 18790: nanobot gateway 端口
 EXPOSE 18780 18790
 
-# 拷贝启动脚本
-COPY start.sh /app/start.sh
-RUN chmod +x /app/start.sh
 
 # 使用启动脚本作为默认命令
 CMD ["/app/start.sh"]

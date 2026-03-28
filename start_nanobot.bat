@@ -22,7 +22,7 @@ if not exist "%VENV_DIR%\Scripts\activate.bat" (
 
 :: Start nanobot webui
      echo Starting nanobot webui...
-start "nanobot-webui" cmd /k "call "%VENV_DIR%\Scripts\activate.bat" && nanobot webui"
+start "nanobot-webui" cmd /k "call "%VENV_DIR%\Scripts\activate.bat" && nanobot webui start"
 
 echo.
 echo nanobot webui started!

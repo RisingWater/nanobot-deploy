@@ -38,7 +38,7 @@ if exist "%NANOBOT_DIR%" (
     git pull
 ) else (
      echo Cloning nanobot repository...
-    git clone --depth 1 "%NANOBOT_REPO%" "%NANOBOT_DIR%"
+    git clone "%NANOBOT_REPO%" "%NANOBOT_DIR%"
 )
 
 echo.
@@ -48,8 +48,8 @@ if exist "%WEBUI_DIR%" (
     cd /d "%WEBUI_DIR%"
     git pull
 ) else (
-     echo Cloning webui repository...
-    git clone --depth 1 "%WEBUI_REPO%" "%WEBUI_DIR%"
+    echo Cloning webui repository...
+    git clone "%WEBUI_REPO%" "%WEBUI_DIR%"
 )
 
 echo.

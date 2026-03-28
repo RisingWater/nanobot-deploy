@@ -38,6 +38,7 @@ RUN apt-get update && apt-get install -y \
 
 # 安装 Bun (用于前端构建)
 RUN curl -fsSL https://bun.com/install | bash
+RUN cp ~/.bun/bin/bun /usr/bin
 
 # 创建工作目录并设置权限
 RUN mkdir -p /app && chown -R $USER_ID:$GROUP_ID /app
